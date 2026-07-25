@@ -7,6 +7,7 @@ import Logo from './components/Logo'
 import { featureCards, footerHighlights, footerLinks, metrics, processSteps } from './data/siteContent'
 import LoginPage from './pages/LoginPage'
 import ReservationPage from './pages/ReservationPage'
+import StaffPage from './pages/StaffPage'
 
 function Announcement() {
   return (
@@ -192,6 +193,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/reserve" element={<ReservationPage />} />
       <Route path="/qr" element={<ReservationPage />} />
+      <Route path="/staff" element={<StaffPage />} />
       <Route path="/*" element={<LandingPage />} />
     </Routes>
   )
