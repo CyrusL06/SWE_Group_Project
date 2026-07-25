@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import Button from '../components/Button'
 import Header from '../components/Header'
+import { createReservation as createReservationApi } from '../services/api'
 
 const initialForm = {
   fullName: '',
@@ -22,23 +23,11 @@ function FieldError({ children, id }) {
   return <span className="reservation-error" id={id}>{children}</span>
 }
 
-function createReservation(form) {
-  return {
-    id: `BR-${Date.now().toString().slice(-6)}`,
-    fullName: form.fullName.trim(),
-    phone: form.phone.trim(),
-    isGroupRental: form.isGroupRental,
-    groupMember: form.groupMember.trim(),
-    bikeType: form.bikeType,
-    duration: form.duration,
-    agreementConfirmed: form.agreementConfirmed,
-    status: 'confirmed',
-  }
-}
-
 export default function ReservationPage() {
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState({})
+  const [submitError, setSubmitError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [submittedReservation, setSubmittedReservation] = useState(null)
 
   const hasDraft = useMemo(() => (
@@ -61,6 +50,7 @@ export default function ReservationPage() {
       ...(name === 'isGroupRental' && !nextValue ? { groupMember: '' } : {}),
     }))
     setErrors(current => ({ ...current, [name]: undefined }))
+    setSubmitError('')
     setSubmittedReservation(null)
   }
 
@@ -77,7 +67,7 @@ export default function ReservationPage() {
     return nextErrors
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
     const nextErrors = validate()
 
@@ -88,12 +78,41 @@ export default function ReservationPage() {
     }
 
     setErrors({})
-    setSubmittedReservation(createReservation(form))
+    setSubmitError('')
+    setIsSubmitting(true)
+
+    try {
+      const { reservation } = await createReservationApi({
+        customer: form.fullName.trim(),
+        phone: form.phone.trim(),
+        bikeType: form.bikeType,
+        duration: form.duration,
+        agreement: form.agreementConfirmed,
+        groupMember: form.isGroupRental ? form.groupMember.trim() : '',
+      })
+
+      setSubmittedReservation({
+        id: reservation.id,
+        fullName: reservation.customer,
+        phone: reservation.phone,
+        isGroupRental: form.isGroupRental,
+        groupMember: form.groupMember.trim(),
+        bikeType: reservation.bikeType,
+        duration: reservation.duration,
+        agreementConfirmed: reservation.agreement,
+        status: reservation.status,
+      })
+    } catch (error) {
+      setSubmitError(error.message || 'Could not submit reservation.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   function resetForm() {
     setForm(initialForm)
     setErrors({})
+    setSubmitError('')
     setSubmittedReservation(null)
     document.getElementById('fullName')?.focus()
   }
@@ -106,7 +125,7 @@ export default function ReservationPage() {
         <header className="reservation-heading">
           <p className="reservation-context">Customer reservation</p>
           <h1>Reserve your bike</h1>
-          <p>Tell us who is riding and what you need. The form, live review, and final confirmation stay together on this page for the frontend prototype.</p>
+          <p>Tell us who is riding and what you need. The form submits through the backend reservation API and returns a confirmation reference.</p>
         </header>
 
         {submittedReservation && (
@@ -270,13 +289,14 @@ export default function ReservationPage() {
               <div><dt>Agreement</dt><dd>{form.agreementConfirmed ? 'Confirmed' : 'Not confirmed'}</dd></div>
             </dl>
 
-            <Button className="reservation-submit" form="reservation-form" type="submit">
-              Confirm reservation
+            <Button className="reservation-submit" disabled={isSubmitting} form="reservation-form" type="submit">
+              {isSubmitting ? 'Submitting...' : 'Confirm reservation'}
             </Button>
             <button className="reservation-reset" disabled={!hasDraft && !submittedReservation} onClick={resetForm} type="button">
               Start new reservation
             </button>
-            <p className="review-note">This frontend prototype keeps the submitted reservation in local component state only.</p>
+            {submitError && <p className="reservation-error review-note" role="alert">{submitError}</p>}
+            <p className="review-note">Reservations are sent to the backend API for this prototype.</p>
           </aside>
         </div>
 

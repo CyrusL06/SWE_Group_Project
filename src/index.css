@@ -1129,4 +1129,19 @@ button, input, select { font: inherit; }
   .walkin-form {
     @apply mt-5 grid gap-4;
   }
+
+  .staff-alert,
+  .staff-empty {
+    @apply rounded-2xl border p-4 text-sm font-bold leading-[1.45];
+    background: var(--surface-elevated);
+    border-color: var(--border-subtle);
+    color: var(--content-secondary);
+  }
+
+  .staff-alert {
+    @apply mb-5;
+    background: #f3d5cf;
+    border-color: #e4aaa0;
+    color: #923d30;
+  }
 }
