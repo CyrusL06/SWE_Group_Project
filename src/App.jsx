@@ -6,6 +6,7 @@ import HeroRide from './components/HeroRide'
 import Logo from './components/Logo'
 import { featureCards, footerHighlights, footerLinks, metrics, processSteps } from './data/siteContent'
 import LoginPage from './pages/LoginPage'
+import ReservationPage from './pages/ReservationPage'
 
 function Announcement() {
   return (
@@ -189,6 +190,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/reserve" element={<ReservationPage />} />
+      <Route path="/qr" element={<ReservationPage />} />
       <Route path="/*" element={<LandingPage />} />
     </Routes>
   )
