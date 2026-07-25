@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Button from '../components/Button'
 import Header from '../components/Header'
 
@@ -22,10 +22,34 @@ function FieldError({ children, id }) {
   return <span className="reservation-error" id={id}>{children}</span>
 }
 
+function createReservation(form) {
+  return {
+    id: `BR-${Date.now().toString().slice(-6)}`,
+    fullName: form.fullName.trim(),
+    phone: form.phone.trim(),
+    isGroupRental: form.isGroupRental,
+    groupMember: form.groupMember.trim(),
+    bikeType: form.bikeType,
+    duration: form.duration,
+    agreementConfirmed: form.agreementConfirmed,
+    status: 'confirmed',
+  }
+}
+
 export default function ReservationPage() {
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState({})
   const [submittedReservation, setSubmittedReservation] = useState(null)
+
+  const hasDraft = useMemo(() => (
+    form.fullName.trim()
+    || form.phone.trim()
+    || form.groupMember.trim()
+    || form.bikeType
+    || form.duration
+    || form.isGroupRental
+    || form.agreementConfirmed
+  ), [form])
 
   function updateField(event) {
     const { checked, name, type, value } = event.target
@@ -64,13 +88,14 @@ export default function ReservationPage() {
     }
 
     setErrors({})
-    setSubmittedReservation({
-      ...form,
-      fullName: form.fullName.trim(),
-      phone: form.phone.trim(),
-      groupMember: form.groupMember.trim(),
-      status: 'confirmed',
-    })
+    setSubmittedReservation(createReservation(form))
+  }
+
+  function resetForm() {
+    setForm(initialForm)
+    setErrors({})
+    setSubmittedReservation(null)
+    document.getElementById('fullName')?.focus()
   }
 
   return (
@@ -81,7 +106,7 @@ export default function ReservationPage() {
         <header className="reservation-heading">
           <p className="reservation-context">Customer reservation</p>
           <h1>Reserve your bike</h1>
-          <p>Tell us who is riding and what you need. Your request stays on this page for this prototype.</p>
+          <p>Tell us who is riding and what you need. The form, live review, and final confirmation stay together on this page for the frontend prototype.</p>
         </header>
 
         {submittedReservation && (
@@ -89,9 +114,9 @@ export default function ReservationPage() {
             <span className="confirmation-mark" aria-hidden="true">✓</span>
             <div>
               <strong>Reservation confirmed</strong>
-              <p>{submittedReservation.fullName}, your {submittedReservation.bikeType.toLowerCase()} request is confirmed for {submittedReservation.duration.toLowerCase()}.</p>
+              <p>{submittedReservation.fullName}, your {submittedReservation.bikeType.toLowerCase()} request is confirmed for {submittedReservation.duration.toLowerCase()}. Reference: {submittedReservation.id}.</p>
             </div>
-            <span className="status-chip">confirmed</span>
+            <span className="status-chip">{submittedReservation.status}</span>
           </div>
         )}
 
@@ -248,9 +273,31 @@ export default function ReservationPage() {
             <Button className="reservation-submit" form="reservation-form" type="submit">
               Confirm reservation
             </Button>
-            <p className="review-note">This prototype does not store or send your details.</p>
+            <button className="reservation-reset" disabled={!hasDraft && !submittedReservation} onClick={resetForm} type="button">
+              Start new reservation
+            </button>
+            <p className="review-note">This frontend prototype keeps the submitted reservation in local component state only.</p>
           </aside>
         </div>
+
+        {submittedReservation && (
+          <section className="submitted-reservation" aria-labelledby="submitted-reservation-title">
+            <div className="review-heading">
+              <p>Submitted request</p>
+              <h2 id="submitted-reservation-title">Reservation details</h2>
+            </div>
+            <dl className="submitted-reservation-list">
+              <div><dt>Reference</dt><dd>{submittedReservation.id}</dd></div>
+              <div><dt>Customer</dt><dd>{submittedReservation.fullName}</dd></div>
+              <div><dt>Phone</dt><dd>{submittedReservation.phone}</dd></div>
+              <div><dt>Rental</dt><dd>{submittedReservation.isGroupRental ? `Group rental: ${submittedReservation.groupMember}` : 'Individual rental'}</dd></div>
+              <div><dt>Bike type</dt><dd>{submittedReservation.bikeType}</dd></div>
+              <div><dt>Duration</dt><dd>{submittedReservation.duration}</dd></div>
+              <div><dt>Agreement</dt><dd>{submittedReservation.agreementConfirmed ? 'Confirmed' : 'Not confirmed'}</dd></div>
+              <div><dt>Status</dt><dd>{submittedReservation.status}</dd></div>
+            </dl>
+          </section>
+        )}
       </main>
     </div>
   )
