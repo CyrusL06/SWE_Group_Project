@@ -41,7 +41,7 @@ body {
 
 a { color: inherit; }
 
-button, input { font: inherit; }
+button, input, select { font: inherit; }
 
 ::selection {
   color: var(--surface-strong);
@@ -717,5 +717,416 @@ button, input { font: inherit; }
   .auth-footer-text a {
     @apply font-black no-underline hover:underline;
     color: var(--accent);
+  }
+
+  .reservation-page {
+    @apply min-h-screen;
+    background: var(--surface-base);
+  }
+
+  .reservation-main {
+    @apply mx-auto max-w-[1080px] px-[clamp(18px,4vw,48px)] pb-[clamp(52px,8vw,88px)] pt-[clamp(38px,6vw,68px)];
+    overflow: visible;
+  }
+
+  .reservation-heading {
+    @apply mb-[clamp(34px,5vw,50px)] max-w-[660px];
+  }
+
+  .reservation-context,
+  .review-heading p {
+    @apply mb-2 text-[13px] font-black uppercase tracking-[.07em];
+    color: var(--accent);
+  }
+
+  .reservation-heading h1 {
+    @apply text-[42px] font-[850] leading-none tracking-[-.055em] max-[470px]:text-[36px];
+    color: var(--content-primary);
+    text-wrap: balance;
+  }
+
+  .reservation-heading > p:last-child {
+    @apply mt-3 max-w-[620px] text-base leading-[1.55];
+    color: var(--content-secondary);
+    text-wrap: pretty;
+  }
+
+  .reservation-confirmation {
+    @apply mb-7 flex items-center gap-4 rounded-3xl border p-5 max-[620px]:items-start max-[620px]:flex-wrap;
+    background: color-mix(in srgb, var(--accent-soft) 48%, var(--surface-elevated));
+    border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+  }
+
+  .confirmation-mark {
+    @apply grid size-9 shrink-0 place-items-center rounded-full text-lg font-black;
+    background: var(--accent);
+    color: var(--content-contrast);
+  }
+
+  .reservation-confirmation > div {
+    @apply min-w-0 flex-1;
+  }
+
+  .reservation-confirmation strong {
+    @apply text-base font-[850];
+    color: var(--content-primary);
+  }
+
+  .reservation-confirmation p {
+    @apply mt-1 text-sm leading-[1.45];
+    color: var(--content-secondary);
+  }
+
+  .status-chip {
+    @apply rounded-full px-3 py-1.5 text-xs font-black;
+    background: var(--surface-strong);
+    color: var(--content-contrast);
+  }
+
+  .reservation-layout {
+    @apply grid grid-cols-[minmax(0,1fr)_320px] items-start gap-[clamp(36px,6vw,72px)] max-[850px]:grid-cols-1;
+  }
+
+  .reservation-form {
+    @apply grid gap-8;
+  }
+
+  .reservation-section {
+    @apply grid min-w-0 gap-5 border-0 border-b pb-8;
+    border-color: var(--border-subtle);
+  }
+
+  .reservation-section legend {
+    @apply mb-5 text-xl font-[850] tracking-[-.035em];
+    color: var(--content-primary);
+  }
+
+  .reservation-fields {
+    @apply grid grid-cols-2 gap-4 max-[620px]:grid-cols-1;
+  }
+
+  .reservation-field {
+    @apply grid content-start gap-2;
+  }
+
+  .reservation-field > span {
+    @apply text-[13px] font-[850];
+    color: var(--content-primary);
+  }
+
+  .reservation-field input,
+  .reservation-field select {
+    @apply min-h-[50px] w-full rounded-2xl border px-[15px] text-[15px] transition-[border-color,box-shadow,background] duration-200 focus:outline-none;
+    background: var(--surface-elevated);
+    border-color: var(--border-subtle);
+    color: var(--content-primary);
+  }
+
+  .reservation-field input::placeholder {
+    color: var(--content-secondary);
+    opacity: .82;
+  }
+
+  .reservation-field input:focus,
+  .reservation-field select:focus {
+    background: #fffef8;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(31, 122, 77, .12);
+  }
+
+  .reservation-field input[aria-invalid='true'],
+  .reservation-field select[aria-invalid='true'] {
+    border-color: #a44736;
+  }
+
+  .reservation-check {
+    @apply flex cursor-pointer items-start gap-3.5 rounded-2xl border p-4;
+    background: var(--surface-elevated);
+    border-color: var(--border-subtle);
+  }
+
+  .reservation-check:has(input:focus-visible) {
+    outline: 3px solid color-mix(in srgb, var(--accent) 80%, white);
+    outline-offset: 3px;
+  }
+
+  .reservation-check input {
+    @apply mt-0.5 size-[19px] shrink-0 accent-[var(--accent)];
+  }
+
+  .reservation-check input:focus-visible {
+    outline: none;
+  }
+
+  .reservation-check span {
+    @apply grid gap-1;
+  }
+
+  .reservation-check strong {
+    @apply text-sm font-[850];
+    color: var(--content-primary);
+  }
+
+  .reservation-check small,
+  .reservation-help {
+    @apply text-[13px] font-medium leading-[1.45];
+    color: var(--content-secondary);
+  }
+
+  .group-member-field {
+    @apply mt-1 max-w-[360px];
+  }
+
+  .reservation-error {
+    @apply text-[13px] font-bold leading-[1.4];
+    color: #923d30;
+  }
+
+  .agreement-section {
+    @apply border-b-0 pb-0;
+  }
+
+  .reservation-review {
+    @apply sticky top-[108px] rounded-[28px] border p-6 shadow-[var(--shadow-tight)] max-[850px]:static;
+    background: var(--surface-elevated);
+    border-color: var(--border-subtle);
+  }
+
+  .review-heading h2 {
+    @apply text-[25px] font-[850] leading-tight tracking-[-.045em];
+    color: var(--content-primary);
+  }
+
+  .review-list {
+    @apply my-6 grid;
+  }
+
+  .review-list > div {
+    @apply grid grid-cols-[94px_1fr] gap-4 border-t py-3.5 first:border-t-0 first:pt-0;
+    border-color: var(--border-subtle);
+  }
+
+  .review-list dt {
+    @apply text-[13px] font-bold;
+    color: var(--content-secondary);
+  }
+
+  .review-list dd {
+    @apply min-w-0 break-words text-right text-sm font-[850];
+    color: var(--content-primary);
+  }
+
+  .reservation-submit {
+    @apply w-full;
+  }
+
+  .review-note {
+    @apply mt-3 text-center text-xs leading-[1.45];
+    color: var(--content-secondary);
+  }
+
+  .reservation-reset {
+    @apply mt-3 inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-full border px-4 text-sm font-black transition-[background,border-color,color,transform] duration-200 disabled:cursor-not-allowed disabled:opacity-45;
+    background: transparent;
+    border-color: var(--border-subtle);
+    color: var(--content-primary);
+  }
+
+  .reservation-reset:not(:disabled):hover {
+    @apply -translate-y-px;
+    background: rgba(31, 122, 77, .08);
+    border-color: var(--border-strong);
+  }
+
+  .submitted-reservation {
+    @apply mt-[clamp(42px,7vw,76px)] rounded-[30px] border p-[clamp(22px,4vw,34px)];
+    background: rgba(255, 253, 246, .7);
+    border-color: var(--border-subtle);
+  }
+
+  .submitted-reservation-list {
+    @apply mt-6 grid grid-cols-2 gap-4 max-[720px]:grid-cols-1;
+  }
+
+  .submitted-reservation-list > div {
+    @apply rounded-2xl border p-4;
+    background: var(--surface-elevated);
+    border-color: var(--border-subtle);
+  }
+
+  .submitted-reservation-list dt {
+    @apply mb-1 text-[13px] font-bold;
+    color: var(--content-secondary);
+  }
+
+  .submitted-reservation-list dd {
+    @apply text-sm font-[850];
+    color: var(--content-primary);
+  }
+
+  .staff-page {
+    @apply min-h-screen;
+    background: var(--surface-base);
+  }
+
+  .staff-main {
+    @apply mx-auto max-w-[1180px] px-[clamp(18px,4vw,48px)] pb-[clamp(52px,8vw,88px)] pt-[clamp(38px,6vw,68px)];
+  }
+
+  .staff-heading {
+    @apply mb-[clamp(28px,5vw,44px)] max-w-[760px];
+  }
+
+  .staff-heading h1 {
+    @apply text-[42px] font-[850] leading-none tracking-[-.055em] max-[470px]:text-[36px];
+    color: var(--content-primary);
+    text-wrap: balance;
+  }
+
+  .staff-heading > p:last-child {
+    @apply mt-3 max-w-[680px] text-base leading-[1.55];
+    color: var(--content-secondary);
+  }
+
+  .staff-metrics {
+    @apply mb-8 grid grid-cols-3 gap-4 max-[820px]:grid-cols-1;
+  }
+
+  .availability-card {
+    @apply rounded-[26px] border p-5 shadow-[var(--shadow-tight)];
+    background: var(--surface-elevated);
+    border-color: var(--border-subtle);
+  }
+
+  .availability-card p {
+    @apply text-sm font-black tracking-[-.02em];
+    color: var(--content-primary);
+  }
+
+  .availability-card strong {
+    @apply mt-3 block text-[42px] font-[850] leading-none tracking-[-.06em];
+    color: var(--accent);
+  }
+
+  .availability-card span,
+  .availability-card small {
+    @apply mt-1 block text-sm font-semibold;
+    color: var(--content-secondary);
+  }
+
+  .staff-grid {
+    @apply grid grid-cols-[minmax(0,1fr)_360px] items-start gap-6 max-[980px]:grid-cols-1;
+  }
+
+  .staff-panel {
+    @apply rounded-[30px] border p-[clamp(20px,4vw,30px)] shadow-[var(--shadow-tight)];
+    background: rgba(255, 253, 246, .78);
+    border-color: var(--border-subtle);
+  }
+
+  .staff-panel-heading {
+    @apply mb-6 flex items-end justify-between gap-5 max-[760px]:grid;
+  }
+
+  .staff-panel h2 {
+    @apply text-[28px] font-[850] leading-tight tracking-[-.045em];
+    color: var(--content-primary);
+  }
+
+  .staff-search {
+    @apply grid min-w-[280px] gap-2 max-[760px]:min-w-0;
+  }
+
+  .staff-search span {
+    @apply text-[13px] font-[850];
+    color: var(--content-primary);
+  }
+
+  .staff-search input,
+  .walkin-form input,
+  .walkin-form select {
+    @apply min-h-[48px] w-full rounded-2xl border px-[15px] text-[15px] transition-[border-color,box-shadow,background] duration-200 focus:outline-none;
+    background: var(--surface-elevated);
+    border-color: var(--border-subtle);
+    color: var(--content-primary);
+  }
+
+  .staff-search input:focus,
+  .walkin-form input:focus,
+  .walkin-form select:focus {
+    background: #fffef8;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(31, 122, 77, .12);
+  }
+
+  .reservation-table {
+    @apply grid gap-3;
+  }
+
+  .reservation-row {
+    @apply grid grid-cols-[1.25fr_.9fr_auto_180px] items-center gap-4 rounded-3xl border p-4 max-[880px]:grid-cols-1;
+    background: var(--surface-elevated);
+    border-color: var(--border-subtle);
+  }
+
+  .reservation-row-head {
+    @apply rounded-2xl bg-transparent px-4 py-2 text-xs font-black uppercase tracking-[.07em] shadow-none max-[880px]:hidden;
+    color: var(--content-secondary);
+  }
+
+  .reservation-row strong {
+    @apply block text-sm font-[850];
+    color: var(--content-primary);
+  }
+
+  .reservation-row small {
+    @apply mt-1 block text-xs font-semibold leading-[1.45];
+    color: var(--content-secondary);
+  }
+
+  .staff-status {
+    @apply w-fit rounded-full px-3 py-1.5 text-xs font-black;
+    background: var(--surface-muted);
+    color: var(--content-primary);
+  }
+
+  .staff-status-active {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .staff-status-returned {
+    background: var(--surface-strong);
+    color: var(--content-contrast);
+  }
+
+  .staff-status-cancelled {
+    background: #f3d5cf;
+    color: #923d30;
+  }
+
+  .staff-actions {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .staff-actions button {
+    @apply min-h-9 cursor-pointer rounded-full border px-3 text-xs font-black transition-[background,border-color,transform,opacity] duration-200 disabled:cursor-not-allowed disabled:opacity-40;
+    background: transparent;
+    border-color: var(--border-subtle);
+    color: var(--content-primary);
+  }
+
+  .staff-actions button:not(:disabled):hover {
+    @apply -translate-y-px;
+    background: rgba(31, 122, 77, .08);
+    border-color: var(--border-strong);
+  }
+
+  .walkin-panel {
+    @apply sticky top-[108px] max-[980px]:static;
+  }
+
+  .walkin-form {
+    @apply mt-5 grid gap-4;
   }
 }

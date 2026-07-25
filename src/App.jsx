@@ -6,6 +6,8 @@ import HeroRide from './components/HeroRide'
 import Logo from './components/Logo'
 import { featureCards, footerHighlights, footerLinks, metrics, processSteps } from './data/siteContent'
 import LoginPage from './pages/LoginPage'
+import ReservationPage from './pages/ReservationPage'
+import StaffPage from './pages/StaffPage'
 
 function Announcement() {
   return (
@@ -27,7 +29,7 @@ function Hero() {
         <p>Track bikes, docks, maintenance, and commuter demand from one calm dashboard.</p>
 
         <div className="button-row">
-          <Button href="#demo">Book a demo</Button>
+          <Button href="/reserve">Reserve a bike</Button>
           <Button href="#features" variant="secondary">View features</Button>
         </div>
       </div>
@@ -75,7 +77,7 @@ function DemoCta() {
         </div>
 
         <p>Share your fleet size and service zones. We will show how CommuteTrack turns trip demand, station status, and maintenance signals into a usable daily plan.</p>
-        <Button href="mailto:sales@commutetrack.io" variant="accent">Request a walkthrough</Button>
+        <Button href="/reserve" variant="accent">Start a reservation</Button>
       </div>
     </section>
   )
@@ -129,7 +131,7 @@ function FinalCta() {
     <section className="section-shell footer-cta">
       <h2>Make reliable bike access your city’s daily default.</h2>
       <p>Give operators the live visibility and field teams the priority list they need before commuter demand hits.</p>
-      <Button href="#demo">Start with your network</Button>
+      <Button href="/reserve">Start a reservation</Button>
 
       <div className="highlights-grid">
         {footerHighlights.map(([title, copy]) => (
@@ -189,6 +191,9 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/reserve" element={<ReservationPage />} />
+      <Route path="/qr" element={<ReservationPage />} />
+      <Route path="/staff" element={<StaffPage />} />
       <Route path="/*" element={<LandingPage />} />
     </Routes>
   )

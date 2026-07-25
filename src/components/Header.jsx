@@ -13,8 +13,9 @@ export default function Header({ minimal = false }) {
           <nav className="nav-links" aria-label="Main navigation">
             <a className="nav-link nav-optional" href="#features">Platform</a>
             <a className="nav-link nav-optional" href="#operations">Operations</a>
+            <Link className="nav-link" to="/staff">Staff</Link>
             <Link className="nav-link" to="/login">Sign in</Link>
-            <a className="nav-link nav-cta" href="#demo">Book a demo</a>
+            <Link className="nav-link nav-cta" to="/reserve">Reserve</Link>
           </nav>
         )}
       </div>
