@@ -6,11 +6,13 @@
   "scripts": {
     "dev": "vite",
     "server": "node server/index.js",
+    "db:init": "node server/initMongo.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "mongodb": "^7.5.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.16.0"
