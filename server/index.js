@@ -1,14 +1,31 @@
 /* global process */
 import { Buffer } from 'node:buffer'
+import { createReadStream } from 'node:fs'
+import { stat } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import { randomUUID, timingSafeEqual } from 'node:crypto'
+import { dirname, extname, join, normalize } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { createStore } from './database.js'
 
 const PORT = Number(process.env.PORT || 3001)
 const STAFF_EMAIL = process.env.STAFF_EMAIL || 'staff@bikerental.local'
 const STAFF_PASSWORD = process.env.STAFF_PASSWORD || 'staff123'
 const STAFF_SESSION_TTL_MS = 1000 * 60 * 60 * 8
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const DIST_DIR = join(__dirname, '..', 'dist')
 const staffSessions = new Map()
+
+const MIME_TYPES = {
+  '.css': 'text/css; charset=utf-8',
+  '.html': 'text/html; charset=utf-8',
+  '.ico': 'image/x-icon',
+  '.js': 'text/javascript; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.png': 'image/png',
+  '.svg': 'image/svg+xml',
+  '.webp': 'image/webp',
+}
 
 function sendJson(response, statusCode, payload) {
   response.writeHead(statusCode, {
@@ -89,6 +106,47 @@ function requireStaff(request, response) {
   }
 
   return session
+}
+
+async function fileExists(path) {
+  try {
+    const fileStat = await stat(path)
+    return fileStat.isFile()
+  } catch {
+    return false
+  }
+}
+
+async function sendFile(response, filePath) {
+  response.writeHead(200, {
+    'Content-Type': MIME_TYPES[extname(filePath)] || 'application/octet-stream',
+  })
+  createReadStream(filePath).pipe(response)
+}
+
+async function serveStaticApp(request, response, url) {
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    sendJson(response, 404, { error: 'Route not found.' })
+    return
+  }
+
+  const decodedPath = decodeURIComponent(url.pathname)
+  const normalizedPath = normalize(decodedPath).replace(/^(\.\.[/\\])+/, '')
+  const requestedPath = join(DIST_DIR, normalizedPath)
+  const safePath = requestedPath.startsWith(DIST_DIR) ? requestedPath : join(DIST_DIR, 'index.html')
+
+  if (await fileExists(safePath)) {
+    await sendFile(response, safePath)
+    return
+  }
+
+  const indexPath = join(DIST_DIR, 'index.html')
+  if (await fileExists(indexPath)) {
+    await sendFile(response, indexPath)
+    return
+  }
+
+  sendJson(response, 404, { error: 'Frontend build not found. Run npm run build before starting production server.' })
 }
 
 function createRequestHandler(store) {
@@ -205,7 +263,12 @@ function createRequestHandler(store) {
       return
     }
 
-    sendJson(response, 404, { error: 'Route not found.' })
+    if (url.pathname.startsWith('/api')) {
+      sendJson(response, 404, { error: 'Route not found.' })
+      return
+    }
+
+    await serveStaticApp(request, response, url)
   }
 }
 

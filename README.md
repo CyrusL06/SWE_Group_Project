@@ -79,6 +79,43 @@ The frontend runs at:
 http://localhost:5173
 ```
 
+## Render Deployment
+
+### One Render Web Service
+
+Use this when Render should host both the API and the built React frontend from one URL.
+
+```text
+Build Command: npm install && npm run build
+Start Command: npm start
+```
+
+Environment variables:
+
+```text
+STORAGE_DRIVER=memory
+STAFF_EMAIL=staff@bikerental.local
+STAFF_PASSWORD=staff123
+```
+
+After deployment, test:
+
+```text
+https://your-service-name.onrender.com/api/health
+```
+
+The backend also serves the built frontend routes, including `/`, `/qr`, `/qr-code`, `/login`, and `/staff`.
+
+### Separate Frontend and Backend
+
+If the frontend is deployed separately from the Render backend, set this build-time frontend variable:
+
+```text
+VITE_API_BASE_URL=https://your-backend-service.onrender.com
+```
+
+Without this variable, the frontend calls `/api/...` on its own domain.
+
 ## Demo Routes
 
 | Page | URL | Purpose |

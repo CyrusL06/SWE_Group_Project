@@ -1,12 +1,18 @@
 import { clearStaffSession, getStaffToken } from './auth'
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+
 function authHeaders() {
   const token = getStaffToken()
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
+function apiUrl(path) {
+  return `${API_BASE_URL}${path}`
+}
+
 async function requestJson(path, options = {}) {
-  const response = await fetch(path, {
+  const response = await fetch(apiUrl(path), {
     headers: {
       'Content-Type': 'application/json',
       ...(options.headers || {}),
