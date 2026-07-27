@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Button from './components/Button'
 import FeatureCard from './components/FeatureCard'
 import Header from './components/Header'
@@ -6,14 +6,27 @@ import HeroRide from './components/HeroRide'
 import Logo from './components/Logo'
 import { featureCards, footerHighlights, footerLinks, metrics, processSteps } from './data/siteContent'
 import LoginPage from './pages/LoginPage'
+import QrCodePage from './pages/QrCodePage'
 import ReservationPage from './pages/ReservationPage'
 import StaffPage from './pages/StaffPage'
+import { getStaffSession } from './services/auth'
+
+function RequireStaffAuth({ children }) {
+  const location = useLocation()
+  const session = getStaffSession()
+
+  if (!session) {
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />
+  }
+
+  return children
+}
 
 function Announcement() {
   return (
     <div className="announcement">
-      <a href="#demo">
-        New commuter dashboard: predict station shortages before the morning rush
+      <a href="/qr-code">
+        Scan-to-reserve flow for customers at the bike rental shop
         <span> →</span>
       </a>
     </div>
@@ -25,18 +38,19 @@ function Hero() {
     <section className="hero-section">
       <div className="hero-content">
         <div className="eyebrow">Bike rental management</div>
-        <h1>Run a bike fleet riders can count on.</h1>
-        <p>Track bikes, docks, maintenance, and commuter demand from one calm dashboard.</p>
+        <h1>Reserve bikes faster. Run rentals cleaner.</h1>
+        <p>A simple booking and staff board for bike shops: customer reservations, QR entry, live bike-type availability, check-ins, walk-ins, returns, and cancellations.</p>
 
         <div className="button-row">
           <Button href="/reserve">Reserve a bike</Button>
+          <Button href="/qr-code" variant="secondary">Show QR code</Button>
           <Button href="#features" variant="secondary">View features</Button>
         </div>
       </div>
 
       <HeroRide />
 
-      <div className="hero-stats" aria-label="CommuteTrack outcomes">
+      <div className="hero-stats" aria-label="Bike rental system capabilities">
         {metrics.map(([number, label]) => (
           <div className="stat-item" key={label}>
             <span className="stat-number">{number}</span>
@@ -53,14 +67,14 @@ function Testimonial() {
     <section className="section-shell testimonial" id="operations">
       <div className="quote-mark">“</div>
       <blockquote>
-        CommuteTrack finally gives our dispatch, service, and rider support teams the same picture of the street. We rebalance earlier, fix the right bikes first, and answer city partners with real numbers.
+        The shop does not need another spreadsheet. Customers reserve before they arrive, staff see the day’s rentals in one place, and bike counts stay tied to real reservation status.
       </blockquote>
 
       <div className="testimonial-author">
-        <div className="avatar">MR</div>
+        <div className="avatar">BR</div>
         <div>
-          <div className="name">Maya Rivera</div>
-          <div className="title">Director of Mobility Operations</div>
+          <div className="name">Bike Rental Team</div>
+          <div className="title">Staff / Clerk workflow</div>
         </div>
       </div>
     </section>
@@ -72,11 +86,11 @@ function DemoCta() {
     <section className="section-shell demo-cta" id="demo">
       <div className="demo-card">
         <div>
-          <div className="eyebrow eyebrow-dark">Operations demo</div>
-          <h2>Map your next shift before bikes leave the dock.</h2>
+          <div className="eyebrow eyebrow-dark">Customer booking</div>
+          <h2>Let customers reserve online or from the shop QR code.</h2>
         </div>
 
-        <p>Share your fleet size and service zones. We will show how CommuteTrack turns trip demand, station status, and maintenance signals into a usable daily plan.</p>
+        <p>The form collects the customer name, phone number, bike type, rental duration, and agreement confirmation so staff can check them in quickly.</p>
         <Button href="/reserve" variant="accent">Start a reservation</Button>
       </div>
     </section>
@@ -89,8 +103,8 @@ function Features() {
       <div className="features-heading">
         <div className="eyebrow">Platform</div>
         <div>
-          <h2>One command surface for every moving part of bike rental.</h2>
-          <p>Replace fragmented spreadsheets, support tickets, and map tabs with a single operating layer that understands commuter patterns.</p>
+          <h2>The required rental workflow without the extra fluff.</h2>
+          <p>Built around the project report: reservations, bike-type availability, staff check-in, walk-ins, returns, late rentals, and cancellations. No payments. No owner dashboard pretending to exist.</p>
         </div>
       </div>
 
@@ -107,8 +121,8 @@ function Steps() {
   return (
     <section className="section-shell steps">
       <div className="steps-header">
-        <div className="eyebrow">Launch path</div>
-        <h2>Go from static fleet data to live operations.</h2>
+        <div className="eyebrow">Rental flow</div>
+        <h2>From reservation to return in three clean steps.</h2>
       </div>
 
       <div className="steps-grid">
@@ -129,8 +143,8 @@ function Steps() {
 function FinalCta() {
   return (
     <section className="section-shell footer-cta">
-      <h2>Make reliable bike access your city’s daily default.</h2>
-      <p>Give operators the live visibility and field teams the priority list they need before commuter demand hits.</p>
+      <h2>Keep the rental counter moving.</h2>
+      <p>Customers book quickly. Staff find them quickly. Bike availability updates as reservations become active rentals and returned bikes become available again.</p>
       <Button href="/reserve">Start a reservation</Button>
 
       <div className="highlights-grid">
@@ -153,7 +167,7 @@ function Footer() {
           <a href="/" aria-label="CommuteTrack home" className="logo-link footer-logo">
             <Logo />
           </a>
-          <p className="footer-disclaimer">CommuteTrack is a fleet operations platform for bike rental and commuter mobility teams. Product availability, integrations, and reporting outputs depend on fleet configuration and data sources.</p>
+          <p className="footer-disclaimer">CommuteTrack is a student bike rental management prototype focused on customer reservations, QR booking, staff check-in, walk-in rentals, returns, cancellations, and bike-type availability. Payments and owner reporting are outside this version.</p>
         </div>
 
         {footerLinks.map(([heading, links]) => (
@@ -193,7 +207,8 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/reserve" element={<ReservationPage />} />
       <Route path="/qr" element={<ReservationPage />} />
-      <Route path="/staff" element={<StaffPage />} />
+      <Route path="/qr-code" element={<QrCodePage />} />
+      <Route path="/staff" element={<RequireStaffAuth><StaffPage /></RequireStaffAuth>} />
       <Route path="/*" element={<LandingPage />} />
     </Routes>
   )
