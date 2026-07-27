@@ -102,7 +102,6 @@ export default function ReservationPage() {
   const [direction, setDirection] = useState(1)
   const [submitError, setSubmitError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submittedPayload, setSubmittedPayload] = useState(null)
   const [submittedReservation, setSubmittedReservation] = useState(null)
   const [reservationQrImage, setReservationQrImage] = useState('')
 
@@ -367,7 +366,6 @@ export default function ReservationPage() {
         width: 260,
       })
 
-      setSubmittedPayload(payload)
       setSubmittedReservation(reservation)
       setReservationQrImage(qrImage)
     } catch (error) {
@@ -379,7 +377,6 @@ export default function ReservationPage() {
 
   function startOver() {
     reset(defaultValues)
-    setSubmittedPayload(null)
     setSubmittedReservation(null)
     setReservationQrImage('')
     setSubmitError('')
@@ -424,10 +421,6 @@ export default function ReservationPage() {
               {reservationQrImage && <img alt={`Reservation QR code for ${submittedReservation.id}`} src={reservationQrImage} />}
             </div>
 
-            <div className="typeform-json-box">
-              <span>Collected JSON</span>
-              <pre>{JSON.stringify(submittedPayload, null, 2)}</pre>
-            </div>
             <Button type="button" onClick={startOver}>Start another reservation</Button>
           </motion.section>
         ) : (

@@ -1396,17 +1396,8 @@ button, input, select { font: inherit; }
     color: var(--content-secondary);
   }
 
-  .typeform-json-box {
-    @apply grid gap-2 overflow-hidden rounded-[28px] border p-4;
-    background: rgba(255, 253, 246, .82);
-    border-color: var(--border-subtle);
-  }
-
   .reservation-receipt-qr {
-    @apply grid grid-cols-[1fr_auto] items-center gap-5 rounded-[30px] border p-5 max-[620px]:grid-cols-1;
-    background: rgba(255, 253, 246, .82);
-    border-color: var(--border-subtle);
-    box-shadow: var(--shadow-tight);
+    @apply grid justify-items-center gap-4 py-4 text-center;
   }
 
   .reservation-receipt-qr span {
@@ -1420,23 +1411,12 @@ button, input, select { font: inherit; }
   }
 
   .reservation-receipt-qr p {
-    @apply mt-2 max-w-[320px] text-sm font-semibold leading-[1.45];
+    @apply mx-auto mt-2 max-w-[320px] text-sm font-semibold leading-[1.45];
     color: var(--content-secondary);
   }
 
   .reservation-receipt-qr img {
-    @apply size-[168px] justify-self-center rounded-[22px] border bg-white p-3;
-    border-color: var(--border-subtle);
-  }
-
-  .typeform-json-box span {
-    @apply text-xs font-black uppercase tracking-[.08em];
-    color: var(--accent);
-  }
-
-  .typeform-json-box pre {
-    @apply overflow-x-auto text-sm leading-[1.5];
-    color: var(--content-primary);
+    @apply size-[196px] justify-self-center;
   }
 
   .typeform-page input.typeform-input,
