@@ -4,7 +4,7 @@ import FeatureCard from './components/FeatureCard'
 import Header from './components/Header'
 import HeroRide from './components/HeroRide'
 import Logo from './components/Logo'
-import { featureCards, footerHighlights, footerLinks, metrics, processSteps } from './data/siteContent'
+import { featureCards, footerHighlights, footerLinks, processSteps } from './data/siteContent'
 import LoginPage from './pages/LoginPage'
 import QrCodePage from './pages/QrCodePage'
 import ReservationPage from './pages/ReservationPage'
@@ -44,20 +44,10 @@ function Hero() {
         <div className="button-row">
           <Button href="/reserve">Reserve a bike</Button>
           <Button href="/qr-code" variant="secondary">Show QR code</Button>
-          <Button href="#features" variant="secondary">View features</Button>
         </div>
       </div>
 
       <HeroRide />
-
-      <div className="hero-stats" aria-label="Bike rental system capabilities">
-        {metrics.map(([number, label]) => (
-          <div className="stat-item" key={label}>
-            <span className="stat-number">{number}</span>
-            <span className="stat-label">{label}</span>
-          </div>
-        ))}
-      </div>
     </section>
   )
 }
