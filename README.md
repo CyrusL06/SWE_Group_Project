@@ -4,19 +4,27 @@ A web-based bike rental management prototype for small bike rental shops. The sy
 
 This project is focused on the required rental workflow from the SWE report: customer reservations, staff/clerk operations, bike-type availability, agreement confirmation, and rental status tracking. Payment processing, POS integration, notifications, analytics, and owner dashboards are outside the scope of this version.
 
+## Live Demo
+
+```text
+https://swe-group-project.onrender.com
+```
+
 ## Screenshots
+
+The screenshots below are captured from the current production build so they match the deployed interface.
 
 ### Homepage
 
-![Homepage](assets/screenshots/homepage.png)
+<img src="assets/screenshots/homepage.png" alt="Bike rental homepage" width="780">
 
 ### Customer reservation workflow
 
-![Customer reservation workflow](assets/screenshots/reservation-workflow.png)
+<img src="assets/screenshots/reservation-workflow.png" alt="Customer reservation workflow" width="780">
 
 ### Staff walk-in rental panel
 
-![Staff walk-in rental panel](assets/screenshots/staff-walkin.png)
+<img src="assets/screenshots/staff-walkin.png" alt="Staff walk-in rental panel" width="360">
 
 ## Main Features
 
