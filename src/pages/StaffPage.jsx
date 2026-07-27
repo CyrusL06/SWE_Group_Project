@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import Header from '../components/Header'
-import { createWalkIn, getAvailability, getReservations, updateReservationStatus as updateReservationStatusApi } from '../services/api'
+import { createWalkIn, getAvailability, getReservations, logoutStaff, updateReservationStatus as updateReservationStatusApi } from '../services/api'
+import { clearStaffSession, getStaffSession } from '../services/auth'
 
 const walkInInitialForm = {
   customer: '',
@@ -14,10 +16,27 @@ const walkInInitialForm = {
 const fallbackBikeTypes = ['City bike', 'Electric bike', 'Cargo bike']
 
 function statusLabel(status) {
-  return status === 'active' ? 'active' : status === 'returned' ? 'returned' : status === 'cancelled' ? 'cancelled' : 'confirmed'
+  return status || 'confirmed'
+}
+
+function statusClass(status) {
+  return statusLabel(status).replace(/\s+/g, '-')
+}
+
+function formatDateTime(value) {
+  if (!value) return 'Not started'
+
+  return new Intl.DateTimeFormat(undefined, {
+    hour: 'numeric',
+    minute: '2-digit',
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(value))
 }
 
 export default function StaffPage() {
+  const navigate = useNavigate()
+  const staffSession = getStaffSession()
   const [reservations, setReservations] = useState([])
   const [availability, setAvailability] = useState([])
   const [search, setSearch] = useState('')
@@ -26,6 +45,16 @@ export default function StaffPage() {
   const [pageError, setPageError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+
+  const handleStaffAuthError = useCallback((error) => {
+    if (error.message?.toLowerCase().includes('staff')) {
+      clearStaffSession()
+      navigate('/login', { replace: true, state: { from: '/staff' } })
+      return true
+    }
+
+    return false
+  }, [navigate])
 
   const bikeOptions = useMemo(() => (
     availability.length > 0 ? availability.map(bike => bike.type) : fallbackBikeTypes
@@ -49,6 +78,7 @@ export default function StaffPage() {
           setAvailability(availabilityPayload.availability)
         }
       } catch (error) {
+        if (handleStaffAuthError(error)) return
         if (!ignore) setPageError(error.message || 'Could not load staff data.')
       } finally {
         if (!ignore) setIsLoading(false)
@@ -60,7 +90,7 @@ export default function StaffPage() {
     return () => {
       ignore = true
     }
-  }, [search])
+  }, [handleStaffAuthError, search])
 
   async function refreshStaffData() {
     const [reservationPayload, availabilityPayload] = await Promise.all([
@@ -79,6 +109,7 @@ export default function StaffPage() {
       await updateReservationStatusApi(id, status)
       await refreshStaffData()
     } catch (error) {
+      if (handleStaffAuthError(error)) return
       setPageError(error.message || 'Could not update reservation status.')
     } finally {
       setIsSaving(false)
@@ -112,6 +143,8 @@ export default function StaffPage() {
       await createWalkIn({
         customer: walkInForm.customer.trim(),
         phone: walkInForm.phone.trim(),
+        bikeQuantity: 1,
+        groupSize: 1,
         bikeType: walkInForm.bikeType,
         duration: walkInForm.duration,
         agreement: walkInForm.agreement,
@@ -119,10 +152,17 @@ export default function StaffPage() {
       setWalkInForm(walkInInitialForm)
       await refreshStaffData()
     } catch (error) {
+      if (handleStaffAuthError(error)) return
       setWalkInError(error.message || 'Could not start walk-in rental.')
     } finally {
       setIsSaving(false)
     }
+  }
+
+  function signOut() {
+    logoutStaff().catch(() => {})
+    clearStaffSession()
+    navigate('/login', { replace: true })
   }
 
   return (
@@ -130,10 +170,17 @@ export default function StaffPage() {
       <Header minimal />
 
       <main className="staff-main">
-        <header className="staff-heading">
-          <p className="reservation-context">Staff / Clerk interface</p>
-          <h1>Daily rental board</h1>
-          <p>Check reservations, search customers by name or phone number, view bike availability, and update rental status through the backend API.</p>
+        <header className="staff-heading staff-heading-row">
+          <div>
+            <p className="reservation-context">Staff / Clerk interface</p>
+            <h1>Daily rental board</h1>
+            <p>Check reservations, search customers by name or phone number, view bike availability, and update rental status through the backend API.</p>
+          </div>
+          <div className="staff-session-card">
+            <span>Signed in as</span>
+            <strong>{staffSession?.name || 'Staff Clerk'}</strong>
+            <button onClick={signOut} type="button">Sign out</button>
+          </div>
         </header>
 
         {pageError && <p className="staff-alert" role="alert">{pageError}</p>}
@@ -187,16 +234,18 @@ export default function StaffPage() {
                     <div>
                       <strong>{reservation.customer}</strong>
                       <small>{reservation.id} · {reservation.phone} · {reservation.time}</small>
+                      {reservation.groupSize > 1 && <small>Group size: {reservation.groupSize} riders</small>}
                     </div>
                     <div>
-                      <strong>{reservation.bikeType}</strong>
-                      <small>{reservation.duration} · Agreement {reservation.agreement ? 'confirmed' : 'missing'}</small>
+                      <strong>{reservation.bikeSelectionSummary || reservation.bikeType}</strong>
+                      <small>{reservation.duration} · {reservation.bikeQuantity || 1} {(reservation.bikeQuantity || 1) === 1 ? 'bike' : 'bikes'} · {reservation.assignedBikeCode || 'not assigned'}</small>
+                      <small>Due {formatDateTime(reservation.expectedReturnAt)} · Agreement {reservation.agreement ? 'confirmed' : 'missing'}</small>
                     </div>
-                    <span className={`staff-status staff-status-${statusLabel(reservation.status)}`}>{statusLabel(reservation.status)}</span>
+                    <span className={`staff-status staff-status-${statusClass(reservation.status)}`}>{statusLabel(reservation.status)}</span>
                     <div className="staff-actions">
                       <button disabled={isSaving || reservation.status !== 'confirmed' || !reservation.agreement} onClick={() => updateReservationStatus(reservation.id, 'active')} type="button">Start</button>
-                      <button disabled={isSaving || reservation.status !== 'active'} onClick={() => updateReservationStatus(reservation.id, 'returned')} type="button">Return</button>
-                      <button disabled={isSaving || reservation.status === 'returned' || reservation.status === 'cancelled'} onClick={() => updateReservationStatus(reservation.id, 'cancelled')} type="button">Cancel</button>
+                      <button disabled={isSaving || !['active', 'late'].includes(reservation.status)} onClick={() => updateReservationStatus(reservation.id, 'returned')} type="button">Return</button>
+                      <button disabled={isSaving || ['returned', 'early return', 'cancelled'].includes(reservation.status)} onClick={() => updateReservationStatus(reservation.id, 'cancelled')} type="button">Cancel</button>
                     </div>
                   </article>
                 ))}
