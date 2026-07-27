@@ -2,6 +2,36 @@ node_modules/
 dist/
 .DS_Store
 *.local
+.env
+.env.*
+!.env.example
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+coverage/
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+
 DESIGN.md 
 BRAND_GUIDELINES.md
 .impeccable.md
+
+# Local sync / OS junk
+.stfolder/
+Thumbs.db
+
+# Local agent/orchestration controls. Keep these out of feature commits.
+AGENTS.md
+PRODUCT.md
+tasks/*.md
+docs/agent-*.md
+docs/current-status.md
+docs/source-report.md
+scripts/agent-*.sh
+scripts/new-task-worktree.sh
