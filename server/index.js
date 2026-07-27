@@ -1,12 +1,18 @@
 /* global process */
+import { Buffer } from 'node:buffer'
 import { createServer } from 'node:http'
+import { randomUUID, timingSafeEqual } from 'node:crypto'
 import { createStore } from './database.js'
 
 const PORT = Number(process.env.PORT || 3001)
+const STAFF_EMAIL = process.env.STAFF_EMAIL || 'staff@bikerental.local'
+const STAFF_PASSWORD = process.env.STAFF_PASSWORD || 'staff123'
+const STAFF_SESSION_TTL_MS = 1000 * 60 * 60 * 8
+const staffSessions = new Map()
 
 function sendJson(response, statusCode, payload) {
   response.writeHead(statusCode, {
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json',
@@ -38,6 +44,53 @@ function readBody(request) {
   })
 }
 
+function safeCompare(value, expected) {
+  const valueBuffer = Buffer.from(String(value || ''))
+  const expectedBuffer = Buffer.from(String(expected || ''))
+
+  if (valueBuffer.length !== expectedBuffer.length) return false
+  return timingSafeEqual(valueBuffer, expectedBuffer)
+}
+
+function createStaffSession() {
+  const token = randomUUID()
+  const expiresAt = new Date(Date.now() + STAFF_SESSION_TTL_MS).toISOString()
+  const session = {
+    email: STAFF_EMAIL,
+    expiresAt,
+    name: 'Staff Clerk',
+    role: 'clerk',
+    token,
+  }
+
+  staffSessions.set(token, session)
+  return session
+}
+
+function getBearerToken(request) {
+  const header = request.headers.authorization || ''
+  const match = header.match(/^Bearer\s+(.+)$/i)
+  return match?.[1] || ''
+}
+
+function requireStaff(request, response) {
+  const token = getBearerToken(request)
+  const session = token ? staffSessions.get(token) : null
+
+  if (!session) {
+    sendJson(response, 401, { error: 'Staff sign-in required.' })
+    return null
+  }
+
+  if (Date.parse(session.expiresAt) <= Date.now()) {
+    staffSessions.delete(token)
+    sendJson(response, 401, { error: 'Staff session expired. Please sign in again.' })
+    return null
+  }
+
+  return session
+}
+
 function createRequestHandler(store) {
   return async function handleRequest(request, response) {
     const url = new URL(request.url, `http://${request.headers.host}`)
@@ -52,7 +105,40 @@ function createRequestHandler(store) {
       return
     }
 
+    if (request.method === 'POST' && url.pathname === '/api/auth/login') {
+      try {
+        const payload = await readBody(request)
+        const emailMatches = safeCompare(payload.email, STAFF_EMAIL)
+        const passwordMatches = safeCompare(payload.password, STAFF_PASSWORD)
+
+        if (!emailMatches || !passwordMatches) {
+          sendJson(response, 401, { error: 'Invalid staff email or password.' })
+          return
+        }
+
+        sendJson(response, 200, { session: createStaffSession() })
+      } catch {
+        sendJson(response, 400, { error: 'Invalid JSON body.' })
+      }
+      return
+    }
+
+    if (request.method === 'GET' && url.pathname === '/api/auth/session') {
+      const session = requireStaff(request, response)
+      if (!session) return
+      sendJson(response, 200, { session })
+      return
+    }
+
+    if (request.method === 'POST' && url.pathname === '/api/auth/logout') {
+      const token = getBearerToken(request)
+      if (token) staffSessions.delete(token)
+      sendJson(response, 200, { ok: true })
+      return
+    }
+
     if (request.method === 'GET' && url.pathname === '/api/reservations') {
+      if (!requireStaff(request, response)) return
       const search = url.searchParams.get('search') || ''
       const reservations = await store.getReservations(search)
       sendJson(response, 200, { reservations })
@@ -77,6 +163,7 @@ function createRequestHandler(store) {
     }
 
     if (request.method === 'POST' && url.pathname === '/api/walk-ins') {
+      if (!requireStaff(request, response)) return
       try {
         const payload = await readBody(request)
         const result = await store.createReservation(payload, 'active')
@@ -95,6 +182,7 @@ function createRequestHandler(store) {
 
     const statusMatch = url.pathname.match(/^\/api\/reservations\/([^/]+)\/status$/)
     if (request.method === 'PATCH' && statusMatch) {
+      if (!requireStaff(request, response)) return
       try {
         const payload = await readBody(request)
         const result = await store.updateReservationStatus(statusMatch[1], payload.status)
