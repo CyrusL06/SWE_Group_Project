@@ -626,11 +626,17 @@ button, input, select { font: inherit; }
   }
 
   .auth-panel {
-    @apply w-[min(100%,420px)];
+    @apply w-[min(100%,460px)] rounded-[30px] border p-[clamp(22px,4vw,34px)] shadow-[var(--shadow-tight)];
+    background: rgba(255, 253, 246, .86);
+    border-color: var(--border-subtle);
   }
 
   .auth-heading {
-    @apply mb-[30px] text-center;
+    @apply mb-[26px] text-left;
+  }
+
+  .auth-heading .reservation-context {
+    @apply mt-0 mb-3;
   }
 
   .auth-heading h1 {
@@ -683,6 +689,30 @@ button, input, select { font: inherit; }
     @apply mt-1.5 w-full;
   }
 
+  .auth-error {
+    @apply rounded-2xl border px-4 py-3 text-sm font-bold;
+    background: #fff4ed;
+    border-color: rgba(216, 135, 47, .34);
+    color: #8a3f12;
+  }
+
+  .auth-demo-note {
+    @apply mt-5 grid gap-1.5 rounded-3xl border px-5 py-4 text-sm;
+    background: rgba(219, 234, 196, .55);
+    border-color: var(--border-subtle);
+    color: var(--content-secondary);
+  }
+
+  .auth-demo-note strong {
+    @apply text-[13px] font-black uppercase tracking-[.07em];
+    color: var(--accent);
+  }
+
+  .auth-demo-note span {
+    @apply font-extrabold;
+    color: var(--content-primary);
+  }
+
   .auth-divider {
     @apply my-6 flex items-center gap-3.5 text-[13px] font-bold before:h-px before:flex-1 after:h-px after:flex-1;
     color: var(--content-tertiary);
@@ -710,12 +740,96 @@ button, input, select { font: inherit; }
   }
 
   .auth-footer-text {
-    @apply mt-6 text-center text-sm;
+    @apply mt-5 text-center text-sm leading-[1.45];
     color: var(--content-secondary);
   }
 
   .auth-footer-text a {
     @apply font-black no-underline hover:underline;
+    color: var(--accent);
+  }
+
+  .auth-typeform-page {
+    @apply overflow-hidden;
+  }
+
+  .auth-typeform-main {
+    @apply mx-auto grid min-h-[calc(100vh-86px)] w-full max-w-[760px] content-center px-[clamp(18px,4vw,42px)] py-[clamp(24px,5vw,54px)];
+  }
+
+  .auth-typeform-card {
+    @apply mx-auto grid w-full max-w-[640px] gap-7 p-[clamp(6px,2vw,14px)];
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .auth-typeform-heading {
+    @apply grid gap-3;
+  }
+
+  .auth-typeform-heading h1 {
+    @apply text-[clamp(34px,6vw,58px)] font-[850] leading-[.98] tracking-[-.06em];
+    color: var(--content-primary);
+    text-wrap: balance;
+  }
+
+  .auth-typeform-heading p:not(.reservation-context) {
+    @apply max-w-[520px] text-[17px] leading-[1.5];
+    color: var(--content-secondary);
+  }
+
+  .auth-typeform-form {
+    @apply grid gap-6;
+  }
+
+  .auth-line-field {
+    @apply grid gap-2;
+  }
+
+  .auth-line-field span {
+    @apply text-[13px] font-black uppercase tracking-[.07em];
+    color: var(--accent);
+  }
+
+  .auth-line-field input {
+    @apply min-h-[58px] w-full rounded-none border-0 border-b-2 bg-transparent px-0 text-[22px] font-bold outline-none transition-[border-color,color] duration-200 placeholder:text-[var(--content-tertiary)];
+    border-color: rgba(23, 34, 29, .28);
+    color: var(--content-primary);
+    box-shadow: none;
+  }
+
+  .auth-line-field input:focus,
+  .auth-line-field input:focus-visible {
+    background: transparent;
+    border-color: var(--accent);
+    box-shadow: none;
+    outline: none;
+    outline-offset: 0;
+  }
+
+  .auth-typeform-submit {
+    @apply mt-1 min-w-[116px] px-7 max-[470px]:w-auto;
+    background: var(--accent);
+    color: #fffaf0 !important;
+  }
+
+  .auth-typeform-submit:hover {
+    background: #17643e;
+  }
+
+  .auth-typeform-bottom {
+    @apply flex flex-wrap items-center justify-between gap-3 border-t pt-5 text-sm font-bold;
+    border-color: var(--border-subtle);
+    color: var(--content-secondary);
+  }
+
+  .auth-typeform-bottom strong {
+    color: var(--content-primary);
+  }
+
+  .auth-typeform-bottom a {
+    @apply no-underline hover:underline;
     color: var(--accent);
   }
 
@@ -731,6 +845,29 @@ button, input, select { font: inherit; }
 
   .reservation-heading {
     @apply mb-[clamp(34px,5vw,50px)] max-w-[660px];
+  }
+
+  .staff-heading-row {
+    @apply flex max-w-none items-start justify-between gap-6 max-[720px]:grid;
+  }
+
+  .staff-session-card {
+    @apply grid min-w-[220px] gap-1.5 rounded-3xl border px-5 py-4 text-sm;
+    background: var(--surface-elevated);
+    border-color: var(--border-subtle);
+    box-shadow: var(--shadow-tight);
+    color: var(--content-secondary);
+  }
+
+  .staff-session-card strong {
+    @apply text-base font-black;
+    color: var(--content-primary);
+  }
+
+  .staff-session-card button {
+    @apply mt-2 w-fit cursor-pointer rounded-full border px-3 py-1.5 text-xs font-black uppercase tracking-[.07em];
+    border-color: var(--border-subtle);
+    color: var(--accent);
   }
 
   .reservation-context,
@@ -969,12 +1106,344 @@ button, input, select { font: inherit; }
     background: var(--surface-base);
   }
 
+  .qr-main {
+    @apply mx-auto grid min-h-[calc(100vh-96px)] max-w-[760px] place-items-center px-[clamp(18px,4vw,48px)] py-[clamp(38px,7vw,78px)];
+  }
+
+  .qr-card {
+    @apply grid w-full gap-6 rounded-[34px] border p-[clamp(22px,5vw,42px)] text-center shadow-[var(--shadow-tight)];
+    background: rgba(255, 253, 246, .86);
+    border-color: var(--border-subtle);
+  }
+
+  .qr-copy {
+    @apply mx-auto max-w-[560px];
+  }
+
+  .qr-copy h1 {
+    @apply text-[clamp(36px,6vw,54px)] font-[850] leading-none tracking-[-.06em];
+    color: var(--content-primary);
+    text-wrap: balance;
+  }
+
+  .qr-copy p:last-child {
+    @apply mx-auto mt-3 max-w-[520px] text-base leading-[1.55];
+    color: var(--content-secondary);
+  }
+
+  .qr-frame {
+    @apply mx-auto grid size-[min(78vw,320px)] place-items-center rounded-[32px] border p-5;
+    background: #fffef8;
+    border-color: var(--border-subtle);
+    box-shadow: inset 0 0 0 1px rgba(23, 34, 29, .04);
+  }
+
+  .qr-frame img {
+    @apply size-full rounded-2xl object-contain;
+  }
+
+  .qr-frame span {
+    @apply text-sm font-black;
+    color: var(--content-secondary);
+  }
+
+  .qr-url-box {
+    @apply grid gap-2 rounded-3xl border px-4 py-3 text-left;
+    background: rgba(219, 234, 196, .48);
+    border-color: var(--border-subtle);
+  }
+
+  .qr-url-box span {
+    @apply text-xs font-black uppercase tracking-[.08em];
+    color: var(--accent);
+  }
+
+  .qr-url-box code {
+    @apply overflow-x-auto whitespace-nowrap text-sm font-black;
+    color: var(--content-primary);
+  }
+
+  .qr-actions {
+    @apply flex flex-wrap justify-center gap-3;
+  }
+
+  .typeform-page {
+    @apply min-h-screen overflow-hidden;
+    background: var(--surface-base);
+  }
+
+  .typeform-main {
+    @apply mx-auto grid min-h-[calc(100vh-86px)] w-full max-w-[760px] content-center px-[clamp(18px,4vw,42px)] py-[clamp(24px,5vw,54px)];
+  }
+
+  .typeform-progress {
+    @apply mx-auto mb-6 grid w-full max-w-[640px] gap-2;
+    color: var(--content-secondary);
+  }
+
+  .typeform-progress span {
+    @apply text-right text-sm font-black;
+  }
+
+  .typeform-progress div {
+    @apply h-1.5 overflow-hidden rounded-full;
+    background: rgba(23, 34, 29, .10);
+  }
+
+  .typeform-progress i {
+    @apply block h-full rounded-full transition-[width] duration-300;
+    background: var(--accent);
+  }
+
+  .typeform-shell {
+    @apply relative mx-auto grid min-h-[440px] w-full max-w-[640px] overflow-hidden;
+  }
+
+  .typeform-card {
+    @apply mx-auto grid w-full max-w-[640px] gap-4 p-[clamp(6px,2vw,14px)];
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .typeform-card h1 {
+    @apply text-[clamp(28px,4.4vw,42px)] font-[850] leading-[1.02] tracking-[-.055em];
+    color: var(--content-primary);
+    text-wrap: balance;
+  }
+
+  .typeform-card > p:not(.reservation-context):not(.typeform-error):not(.typeform-keyboard-hint) {
+    @apply max-w-[500px] text-[15px] leading-[1.5];
+    color: var(--content-secondary);
+  }
+
+  .typeform-answer {
+    @apply mt-2 grid gap-3;
+    outline: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .typeform-answer:focus-within {
+    outline: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .typeform-input {
+    @apply min-h-[58px] w-full rounded-none border-0 border-b-2 bg-transparent px-0 text-[22px] font-bold outline-none transition-[border-color,color] duration-200 placeholder:text-[var(--content-tertiary)];
+    border-color: rgba(23, 34, 29, .28);
+    color: var(--content-primary);
+    box-shadow: none;
+  }
+
+  .typeform-input:focus,
+  .typeform-input:focus-visible {
+    background: transparent;
+    border-color: var(--accent);
+    box-shadow: none;
+    outline: none;
+    outline-offset: 0;
+  }
+
+  .typeform-choice-grid {
+    @apply grid gap-3;
+  }
+
+  .typeform-choice,
+  .typeform-agreement {
+    @apply flex cursor-pointer items-center gap-3.5 rounded-[24px] border px-4 py-3.5 text-left transition-[border-color,box-shadow,background,transform] duration-200 hover:-translate-y-px;
+    background: rgba(255, 253, 246, .82);
+    border-color: var(--border-subtle);
+    color: var(--content-primary);
+    box-shadow: var(--shadow-tight);
+  }
+
+  .typeform-choice:has(input:checked),
+  .typeform-agreement:has(input:checked) {
+    background: #fffef8;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 5px rgba(31, 122, 77, .10);
+  }
+
+  .typeform-choice input,
+  .typeform-agreement input {
+    @apply size-5 shrink-0 accent-[var(--accent)];
+  }
+
+  .typeform-choice span,
+  .typeform-agreement span {
+    @apply text-base font-black;
+  }
+
+  .typeform-bike-step,
+  .typeform-terms-block,
+  .typeform-group-panel {
+    @apply grid gap-4;
+  }
+
+  .typeform-bike-selection-list {
+    @apply grid gap-3;
+  }
+
+  .typeform-bike-selection {
+    @apply grid grid-cols-[1fr_auto] items-center gap-4 rounded-[24px] border px-4 py-3.5 max-[560px]:grid-cols-1;
+    background: rgba(255, 253, 246, .82);
+    border-color: var(--border-subtle);
+    box-shadow: var(--shadow-tight);
+  }
+
+  .typeform-bike-selection > span {
+    @apply text-base font-black;
+    color: var(--content-primary);
+  }
+
+  .typeform-selection-total {
+    @apply text-sm font-black;
+    color: var(--content-secondary);
+  }
+
+  .typeform-inline-count {
+    @apply grid gap-3 rounded-[24px] border p-4;
+    background: rgba(255, 253, 246, .58);
+    border-color: var(--border-subtle);
+  }
+
+  .typeform-inline-count > span {
+    @apply text-sm font-black;
+    color: var(--content-secondary);
+  }
+
+  .typeform-counter {
+    @apply flex w-fit items-center gap-4 rounded-full border px-4 py-3;
+    background: rgba(255, 253, 246, .82);
+    border-color: var(--border-subtle);
+    box-shadow: var(--shadow-tight);
+  }
+
+  .typeform-counter button {
+    @apply grid size-10 cursor-pointer place-items-center rounded-full border text-xl font-black transition-[background,color,transform] duration-200 hover:-translate-y-px;
+    background: var(--surface-elevated);
+    border-color: var(--border-subtle);
+    color: var(--content-primary);
+  }
+
+  .typeform-counter button:hover {
+    background: var(--surface-strong);
+    color: #fffaf0;
+  }
+
+  .typeform-counter strong {
+    @apply min-w-10 text-center text-[26px] font-[850] leading-none;
+    color: var(--content-primary);
+  }
+
+  .typeform-counter span {
+    @apply block text-xs font-black uppercase tracking-[.08em];
+    color: var(--content-secondary);
+  }
+
+  .typeform-bike-counter {
+    @apply mt-1;
+  }
+
+  .typeform-terms-block ul {
+    @apply grid gap-2 rounded-[24px] border p-4 text-sm font-semibold leading-[1.45];
+    background: rgba(255, 253, 246, .72);
+    border-color: var(--border-subtle);
+    color: var(--content-secondary);
+  }
+
+  .typeform-terms-block li {
+    @apply ml-4 list-disc;
+  }
+
+  .typeform-error {
+    @apply px-0 py-1 text-sm font-black;
+    background: transparent;
+    border: 0;
+    color: #8a3f12;
+  }
+
+  .typeform-actions {
+    @apply mt-3 flex items-center justify-between gap-3;
+  }
+
+  .typeform-back,
+  .typeform-next {
+    @apply min-h-11 cursor-pointer rounded-full px-5 text-sm font-black transition-[opacity,transform,background] duration-200 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .typeform-back {
+    @apply bg-transparent;
+    color: var(--content-secondary);
+  }
+
+  .typeform-next {
+    @apply text-white hover:-translate-y-px;
+    background: var(--accent);
+  }
+
+  .typeform-keyboard-hint {
+    @apply text-center text-xs font-bold;
+    color: var(--content-tertiary);
+  }
+
+  .typeform-success {
+    @apply text-left;
+  }
+
+  .typeform-success > p:not(.reservation-context) {
+    @apply text-lg leading-[1.6];
+    color: var(--content-secondary);
+  }
+
+  .reservation-receipt-qr {
+    @apply grid justify-items-center gap-4 py-4 text-center;
+  }
+
+  .reservation-receipt-qr span {
+    @apply text-xs font-black uppercase tracking-[.08em];
+    color: var(--accent);
+  }
+
+  .reservation-receipt-qr strong {
+    @apply mt-1 block text-[28px] font-[850] tracking-[-.04em];
+    color: var(--content-primary);
+  }
+
+  .reservation-receipt-qr p {
+    @apply mx-auto mt-2 max-w-[320px] text-sm font-semibold leading-[1.45];
+    color: var(--content-secondary);
+  }
+
+  .reservation-receipt-qr img {
+    @apply size-[196px] justify-self-center;
+  }
+
+  .typeform-page input.typeform-input,
+  .typeform-page input.typeform-input:focus,
+  .typeform-page input.typeform-input:focus-visible,
+  .typeform-page input.typeform-input:active {
+    outline: 0 !important;
+    outline-offset: 0 !important;
+    box-shadow: none !important;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
   .staff-main {
     @apply mx-auto max-w-[1180px] px-[clamp(18px,4vw,48px)] pb-[clamp(52px,8vw,88px)] pt-[clamp(38px,6vw,68px)];
   }
 
   .staff-heading {
     @apply mb-[clamp(28px,5vw,44px)] max-w-[760px];
+  }
+
+  .staff-heading.staff-heading-row {
+    @apply max-w-none;
+  }
+
+  .staff-heading.staff-heading-row > div:first-child {
+    @apply max-w-[760px];
   }
 
   .staff-heading h1 {
@@ -1043,7 +1512,7 @@ button, input, select { font: inherit; }
   }
 
   .staff-search input,
-  .walkin-form input,
+  .walkin-form input:not([type='checkbox']),
   .walkin-form select {
     @apply min-h-[48px] w-full rounded-2xl border px-[15px] text-[15px] transition-[border-color,box-shadow,background] duration-200 focus:outline-none;
     background: var(--surface-elevated);
@@ -1052,7 +1521,7 @@ button, input, select { font: inherit; }
   }
 
   .staff-search input:focus,
-  .walkin-form input:focus,
+  .walkin-form input:not([type='checkbox']):focus,
   .walkin-form select:focus {
     background: #fffef8;
     border-color: var(--accent);
@@ -1095,9 +1564,15 @@ button, input, select { font: inherit; }
     color: var(--accent);
   }
 
-  .staff-status-returned {
+  .staff-status-returned,
+  .staff-status-early-return {
     background: var(--surface-strong);
     color: var(--content-contrast);
+  }
+
+  .staff-status-late {
+    background: #fff4ed;
+    color: #8a3f12;
   }
 
   .staff-status-cancelled {
@@ -1128,6 +1603,14 @@ button, input, select { font: inherit; }
 
   .walkin-form {
     @apply mt-5 grid gap-4;
+  }
+
+  .walkin-form .reservation-check {
+    @apply items-start;
+  }
+
+  .walkin-form .reservation-check input[type='checkbox'] {
+    @apply mt-0.5 size-[19px] shrink-0;
   }
 
   .staff-alert,
